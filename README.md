@@ -8,6 +8,7 @@ where the history utterances are encoded as vectors and stored into memory cells
 
 ## Content
 * [Requirements](#requirements)
+* [Dataset](#Dataset)
 * [Getting Started](#getting-started)
 * [Model Running](#model-running)
 * [Contact](#contact)
@@ -20,7 +21,10 @@ where the history utterances are encoded as vectors and stored into memory cells
 4. H5py `pip install h5py`
 
 ## Dataset
-1. Train/Test: word sequences with IOB slot tags and the indicator of the dialogue start point (1: starting point; 0: otherwise) `data/cortana.communication.5.[train/dev/test].iob`
+Consists of two datasets derieved from **Simulated-Google Restaurant dataset**
+
+- **Dataset without acts** : Only take present utterance intent and slot
+- **Datset with acts** : Take present utterance intent, slot and user_act.
 
 
 ## Getting Started
@@ -33,7 +37,7 @@ You can train and test JointSLU with the following commands:
 
 ## Model Running
 Points to consider while running
-- Give pretrained-embeddings as ![ConceptNet Numberbatch][https://github.com/commonsense/conceptnet-numberbatch], other will lead to error.
+- Give pretrained-embeddings as ![ConceptNet Numberbatch](https://github.com/commonsense/conceptnet-numberbatch), other will lead to error.
 - Change data directories in `sequence_tagger.py`, by default **dataset without acts**. (NOTE :: Don't use **dataset folder as acts is not handled in code for now**)
 
 ```shell
