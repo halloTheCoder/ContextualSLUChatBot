@@ -8,7 +8,7 @@ where the history utterances are encoded as vectors and stored into memory cells
 
 ## Content
 * [Requirements](#requirements)
-* [Dataset](#Dataset)
+* [Dataset](#dataset)
 * [Getting Started](#getting-started)
 * [Model Running](#model-running)
 * [Contact](#contact)
@@ -37,7 +37,7 @@ You can train and test JointSLU with the following commands:
 
 ## Model Running
 Points to consider while running
-- Give pretrained-embeddings as ![ConceptNet Numberbatch](https://github.com/commonsense/conceptnet-numberbatch), other will lead to error.
+- Give pretrained-embeddings as [ConceptNet Numberbatch](https://github.com/commonsense/conceptnet-numberbatch), other will lead to error.
 - Change data directories in `sequence_tagger.py`, by default **dataset without acts**. (NOTE :: Don't use **dataset folder as acts is not handled in code for now**)
 
 ```shell
