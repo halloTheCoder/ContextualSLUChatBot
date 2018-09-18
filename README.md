@@ -38,7 +38,7 @@ You can train and test JointSLU with the following commands:
 ## Model Running
 Points to consider while running
 - Give pretrained-embeddings as [ConceptNet Numberbatch](https://github.com/commonsense/conceptnet-numberbatch), other will lead to error.
-- Change data directories in `sequence_tagger.py`, by default **dataset without acts**. (NOTE :: Don't use **dataset folder as acts is not handled in code for now**)
+- Change data directories in `sequence_tagger.py`, by default **dataset without acts folder**. (NOTE :: Don't use **dataset folder as acts is not handled in code for now**)
 
 ```shell
 	python sequence_tagger.py
