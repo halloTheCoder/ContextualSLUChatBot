@@ -189,28 +189,33 @@ class KerasModel(object):
         mem_vec = TimeDistributed(sent_model)(input_memory)       # (None, his_length, 2 * embedding_size)
         
         # compute the similarity between sentence embeddings for attention
+        # cur_vec_extend = RepeatVector(self.his_length)(cur_vec)
+        # nn.Linear(mem_vec + cur_vec)               # (None, his_length, )
         match = merge([mem_vec, cur_vec], mode = 'dot', dot_axes = [2, 1])
         match = Activation(activation = 'softmax', name = 'match')(match)       # (None, his_length)
         
         # encode the history with the current utterance and then feed into each timestep for tagging
-        his_vec = merge([mem_vec, match], mode = 'dot', dot_axes = [1, 1])                    # (None, 2 * embedding_size)
+        his_vec = merge([mem_vec, match], mode = 'dot', dot_axes = [1, 1])      # (None, 2 * embedding_size)
         o_vec = merge([his_vec, cur_vec], mode = 'sum')                         # (None, 2 * embedding_size)
         o_vec = Dense(self.embedding_size)(o_vec)
-        o_vec = RepeatVector(self.time_length)(o_vec)                         # (None, time_len, embedding_size) this is the 'o' vector mentioned in the paper
+        o_vec = RepeatVector(self.time_length)(o_vec)                           # (None, time_len, embedding_size) this is the 'o' vector mentioned in the paper
         
         current_o = merge([current, o_vec], mode = 'concat', concat_axis = -1)
-
-        fencoder = LSTM(self.hidden_size, return_sequences=False, kernel_initializer = self.init_type, activation=self.activation)(current_o)
-        bencoder = LSTM(self.hidden_size, return_sequences=False, kernel_initializer = self.init_type, activation=self.activation, go_backwards=True)(current_o)
+        print(current_o.shape)
+        # fencoder = LSTM(self.hidden_size, return_sequences=False, kernel_initializer = self.init_type, activation=self.activation)(current_o)
+        # bencoder = LSTM(self.hidden_size, return_sequences=False, kernel_initializer = self.init_type, activation=self.activation, go_backwards=True)(current_o)
         flabeling = LSTM(self.hidden_size, return_sequences=True, kernel_initializer = self.init_type, activation=self.activation)(current_o)
         blabeling = LSTM(self.hidden_size, return_sequences=True, kernel_initializer = self.init_type, activation=self.activation, go_backwards=True)(current_o)
         
-        encoder = merge([fencoder, bencoder], mode = 'concat', concat_axis = -1)
-        labeling = merge([flabeling, blabeling], mode = 'concat', concat_axis = -1)
+        # encoder = merge([fencoder, bencoder], mode = 'concat', concat_axis = -1)
+        encoder = merge([flabeling[:, -1, :], blabeling[:, -1, :]], mode = 'concat', concat_axis = -1)
+        print(encoder.shape)
+        tagger = merge([flabeling, blabeling], mode = 'concat', concat_axis = -1)
+        print(tagger.shape)
 
         intent_pred = Dense(self.output_intent_size, activation = 'softmax', name = 'intent')(encoder)
-        encoder = RepeatVector(self.time_length)(encoder)
-        tagger = merge([encoder, labeling], mode = 'concat', concat_axis = -1)
+        # encoder = RepeatVector(self.time_length)(encoder)
+        # tagger = merge([encoder, labeling], mode = 'concat', concat_axis = -1)
         if self.dropout:
             tagger = Dropout(self.dropout_ratio)(tagger)
         
